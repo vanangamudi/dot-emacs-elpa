@@ -1,0 +1,2 @@
+* Overview
+This repository contain the =elpa/= directory under =.emacs.d/= for my config. 

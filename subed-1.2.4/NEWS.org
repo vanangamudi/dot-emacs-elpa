@@ -1,0 +1,250 @@
+#+OPTIONS: toc:nil
+
+* subed news
+** Version 1.2.4 - 2023-09-11 - Sacha Chua
+
+Guess the format when the generic subed-mode is loaded. Also, require
+svg when subed-waveform is loaded.
+
+** Version 1.2.3 - 2023-06-18 - Sacha Chua
+
+Added subed-waveform, which you can enable with
+subed-waveform-minor-mode. This makes it easier to review the waveform
+for the current subtitle so that you can use it to adjust the start or
+stop time. It requires the ffmpeg executable. Thanks, mbork!
+
+** Version 1.2.2 - 2023-04-09 - Sacha Chua
+
+subed should not autoplay media over TRAMP.
+
+** Version 1.2.1 - 2023-03-21 - Sacha Chua
+
+Adjusting the starting or stopping timestamp (including via merges)
+should now also update the looping start and stop times.
+
+** Version 1.2.0 - 2023-03-10 - Sacha Chua
+
+I changed ~subed-mode~ so that it doesn't add functions to local
+hooks, because that seems to mess up configuring hooks from your Emacs
+init file. Please see README.org for recommended code to add to your
+~subed-mode-hook~. I decided to suggest each line separately so that
+it's easier for people to disable specific behaviors instead of hiding
+it in ~subed-setup-defaults~.
+
+** Version 1.1.0 - 2023-03-07 - Sacha Chua
+
+There are new customizable values for subed-enforce-time-boundaries
+that affect setting or adjusting the start or stop times if a subtitle
+will end up overlapping with the previous or next subtitle (based on
+subed-subtitle-spacing), or if a subtitle will have negative duration.
+
+- ='adjust=: the new default. If a subtitle will have invalid times,
+  adjust the other time to resolve the conflict.
+- ='clip=: set the current time to at most (or at least) the other time, taking spacing into account.
+- ='error=: report an error when trying to set an invalid time.
+- =nil=: don't perform any checks, just set the time.
+
+By default, you can adjust times with ~M-[~ (~decrease-start-time~), ~M-]~ (~increase-start-time~), ~M-{~ (~decrease-stop-time~), and ~M-}~ (~increase-stop-time~).
+
+I've been writing more tests to cover the behavior, but I might've
+missed stuff, so please let me know if things turn up!
+
+** Version 1.0.29 - 2022-12-29 - Sacha Chua
+
+subed-toggle-sync-point-to-player should not confuse subed when it is
+already looping over a subtitle. Also, subed-loop-seconds-before and
+subed-loop-seconds-after now default to 0 for less confusion.
+
+** Version 1.0.28 - 2022-12-22 - Sacha Chua
+
+subed-parse-file should handle nil filenames now. Also, it should not
+try to autoplay media.
+
+** Version 1.0.27 - 2022-12-16 - Sacha Chua
+
+Bugfix: Actually include VTT comments when inserting subtitles
+programmatically.
+
+** Version 1.0.26 - 2022-11-30 - Sacha Chua
+
+subed-align now keeps VTT comments. It also doesn't remove silences by
+default now, since aeneas turned out to be a little too aggressive
+about silence detection.
+
+** Version 1.0.25 - 2022-11-30 - Sacha Chua
+
+subed-move-subtitles and subed-scale-subtitles are now interactive
+commands. The documentation for subed-scale-subtitles now mentions
+subed-move-subtitles, and I've updated the README to mention them.
+
+** Version 1.0.24 - 2022-11-18 - Sacha Chua
+
+subed should compile without checkdoc warnings or obsolete functions now.
+
+** Version 1.0.23 - 2022-11-18 - Sacha Chua
+
+You can now use ~subed-copy-region-text~ to copy the text from
+subtitles in a region. Call it with a prefix argument (~C-u M-x
+subed-copy-region-text~) to include comments.
+
+Calling ~C-u M-x subed-convert~ will retain comments in the TXT
+output.
+
+** Version 1.0.22 - 2022-11-17 - Sacha Chua
+
+VTT comments are now parsed and returned as part of ~subed-subtitle~
+and ~subed-subtitle-list~. This makes it easier to build workflows
+that use the comment information, such as adding NOTE lines for
+chapters and then creating a new file based on those lines and the
+subtitles following them.
+
+A new function ~subed-create-file~ helps create a file with a list of
+subtitles.
+
+Sanitizing VTT files with ~subed-sanitize~ should retain comments now.
+
+~subed-convert~ should now create a buffer instead of a file if the
+source is a buffer that isn't a file.
+
+** Version 1.0.21 - 2022-11-16 - Sacha Chua
+
+- subed-align-options is a new variable that will be passed to aeneas
+  during execution.
+- Calling subed-split-subtitle with the C-u prefix will now allow you
+  to specify either an offset or a timestamp. If a timestamp is
+  specified, it will be used as the starting timestamp of the second
+  subtitle.
+
+** Version 1.0.20 - 2022-11-16 - Sacha Chua
+
+subed now talks about media files instead of video files, since audio
+files are fine too. Updating the function names and documentations to
+refer to media instead of video files can help people think of using
+subed for audio files as well. Distinguishing between video and audio
+extensions can be useful for tools like aeneas, which expect audio
+files.
+
+I defined obsolete function and variable aliases for most things, but
+subed-mpv-media-file (used to be subed-mpv-video-file) uses
+defvar-local, so it didn't work well with
+define-obsolete-variable-alias. If you have any code that uses
+subed-mpv-video-file, please rewrite it to refer to
+subed-mpv-media-file instead.
+
+** Version 1.0.19 - 2022-11-11 - Sacha Chua
+
+New commands subed-merge-dwim, subed-merge-region,
+subed-merge-region-and-set-text, and subed-set-subtitle-text can help
+with making chapter files.
+
+Added more details to the README.org.
+
+This version also includes bugfixes for subed-align and subed-vtt.
+
+** Version 1.0.18 - 2022-11-08 - Sacha Chua
+
+New function subed-parse-file.
+
+** Version 1.0.17 - 2022-11-07 - Sacha Chua
+
+New command subed-align in the subed-align.el file lets you use aeneas
+for forced alignment. This can assign timestamps to each line of text.
+
+VTT files can now have optional cue identifiers. A cue identifier is a
+line of text before the timestamps that can identify the cue. It
+should not contain "-->".
+
+** Version 1.0.16 - 2022-10-26 - Sacha Chua
+
+When you load word data, subtitle words that were successfully matched
+with the word-level timestamps will now be highlighted so that it's
+easier to split at them.
+
+** Version 1.0.15 - 2022-10-26 - Sacha Chua
+
+Added support for SRV2 files in subed-word-data.el. You can use
+subed-word-data-load-from-file to load word-level timing data from
+SRV2 files or add subed-word-data-load-maybe to the subed-mode-hook.
+
+VTT no longer assumes that the start of the file is part of
+the first subtitle.
+
+VTT and SRT are now less confused by spaces at the end of a subtitle
+when splitting.
+
+** Version 1.0.14 - 2022-10-25 - Sacha Chua
+
+Delete the CPS overlay when disabling it
+
+** Version 1.0.13 - 2022-10-25 - Sacha Chua
+
+Fixed TSV fontlocking.
+Improved subed-convert so that the new buffer is also visiting a file.
+
+** Version 1.0.12 - 2022-10-23 - Sacha Chua
+
+Added new command ~subed-convert~.
+
+** Version 1.0.11 - 2022-10-23 - Sacha Chua
+
+Added subed-tsv.el for Audacity label exports. Use M-x subed-tsv-mode to load it.
+
+** Version 1.0.10 - 2022-09-20 - Sacha Chua
+
+Use - instead of : in mpv socket names to see if that will make it work better on Microsoft Windows.
+
+** Version 1.0.9 - 2022-09-14 - Sacha Chua
+
+- Consolidated the different faces to subed-id-face, subed-time-face,
+  and subed-time-separator-face. Added tests for font-locking. Dropped
+  text font-locking for now since we didn't have a good regular
+  expression for it.
+
+  Obsolete:
+  - subed-srt-id-face
+  - subed-srt-time-face
+  - subed-srt-time-separator-face
+  - subed-srt-text-face
+  - subed-vtt-id-face
+  - subed-vtt-time-face
+  - subed-vtt-time-separator-face
+  - subed-vtt-text-face
+  - subed-ass-id-face
+  - subed-ass-time-face
+  - subed-ass-time-separator-face
+  - subed-ass-text-face
+  
+Thanks to Igor for the bug report!
+
+** Version 1.0.8 - 2022-09-08 - Sacha Chua
+
+- Added support for SRT comment syntax thanks to mbork.
+  http://mbork.pl/2022-09-05_Comments_in_srt_files
+
+** Version 1.0.6 - 2022-07-22 - Sacha Chua
+
+- Allow mm:ss.000 (optional hours) when validating VTT files.
+- Use just the buffer name hash when naming the MPV socket.
+
+** Version 1.0.3 - 2022-02-07 - Sacha Chua
+
+subed now tries to avoid sorting already-sorted buffers, which should
+reduce interference with mark rings and other things.
+
+** Version 1.0.1 - 2022-02-01 - Sacha Chua
+
+Added obsolete function aliases in case people are calling
+format-specific functions in their code.
+
+** Version 1.0.0 - 2022-01-02 - Sacha Chua
+
+Format-specific modes are now initialized with =(subed-srt-mode)=,
+=(subed-vtt-mode)=, or =(subed-ass-mode)= instead of the corresponding
+=(subed-vtt--init)= functions.
+
+I implemented the format-specific functions with =cl-defmethod=, so if
+you have any code that refers to functions like
+=subed-vtt--timestamp-to-msecs=, you will need to change your code to
+use generic functions such as =subed-timestamp-to-msecs=.
+
+

@@ -1,0 +1,2 @@
+;; Generated package description from ivy-hydra.el  -*- no-byte-compile: t -*-
+(define-package "ivy-hydra" "0.14.0" "Additional key bindings for Ivy" '((emacs "24.5") (ivy "0.14.0") (hydra "0.14.0")) :commit "1ee6eda9f632d66f5e6b582a0d565e52feb856ed" :authors '(("Oleh Krehel" . "ohwoeowho@gmail.com")) :maintainer '("Oleh Krehel" . "ohwoeowho@gmail.com") :keywords '("convenience") :url "https://github.com/abo-abo/swiper")
